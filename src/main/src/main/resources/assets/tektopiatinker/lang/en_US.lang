@@ -36,42 +36,42 @@
 #= Config =
 #==========
 
-#== Trader ==
-config.trader=Trader
-config.trader.tooltip=Trader settings
+#== Tinker ==
+config.tinker=Tinker
+config.tinker.tooltip=Tinker settings
 
-config.trader.trades=Trades
-config.trader.trades.tooltip=The list of trade items to include with the trader. Each trade item = 1 emerald.
-config.trader.tradesperday=Trades Per Day
-config.trader.tradesperday.tooltip=The number of trades that can be made for each item per day. Minimum is 1 and Maximum is 99999.
-config.trader.checksvillagesize=Checks Village Size
-config.trader.checksvillagesize.tooltip=If enabled, when trying to spawn a trader it will check the size of the village. The more villagers the less often the trader will spawn.
+config.tinker.emeraldsPerTinker=Emeralds Per Tinker
+config.tinker.emeraldsPerTinker.tooltip=The amount of emeralds required for each tinker. Set to 0 to prevent emerald charge.
+config.tinker.tinkersperday=Tinkers Per Day
+config.tinker.tinkersperday.tooltip=The number of tinkers that can be made for each item per day. Minimum is 1 and Maximum is 99999.
+config.tinker.checksvillagesize=Checks Village Size
+config.tinker.checksvillagesize.tooltip=If enabled, when trying to spawn a tinker it will check the size of the village. The more villagers the less often the tinker will spawn.
 
 
 #============
 #= Commands =
 #============
-commands.trader.usage=/trader
-commands.trader.spawn.usage=/trader spawn
-commands.trader.spawn.success=§aTrader has appeared at %s
-commands.trader.spawn.failed=§cTrader spawn failed
-commands.trader.spawn.badconditions=§cTrader spawn failed...spawn conditions not valid
-commands.trader.spawn.exists=§eTrader spawn failed...Trader already located in the village
-commands.trader.spawn.noposition=§cTrader spawn failed...no spawn position found
-commands.trader.spawn.novillage=§cTrader spawn failed...no village found
+commands.tinker.usage=/tinker
+commands.tinker.spawn.usage=/tinker spawn
+commands.tinker.spawn.success=§aTinker has appeared at %s
+commands.tinker.spawn.failed=§cTinker spawn failed
+commands.tinker.spawn.badconditions=§cTinker spawn failed...spawn conditions not valid
+commands.tinker.spawn.exists=§eTinker spawn failed...Tinker already located in the village
+commands.tinker.spawn.noposition=§cTinker spawn failed...no spawn position found
+commands.tinker.spawn.novillage=§cTinker spawn failed...no village found
 
 #=================
 #= Chat Messages =
 #=================
 
-message.trader.exists=§eTrader already located in the village
-message.trader.noposition=§cCould not find a spawn location for the Trader
-message.trader.spawned=§aTrader has appeared at %s
+message.tinker.exists=§eTinker already located in the village
+message.tinker.noposition=§cCould not find a spawn location for the Tinker
+message.tinker.spawned=§aTinker has appeared at %s
 
 
 #============
 #= Entities =
 #============
 
-entity.trader.name=Trader
-entity.trader.information=§bThe Trader is a vendor that wanders into your village. A player can trade with them to buy emeralds in exchange for specific items.
+entity.tinker.name=Tinker
+entity.tinker.information=§bThe Tinker is a vendor that wanders into your village. A player can interact with them to associate a structure token from another village to their village.
