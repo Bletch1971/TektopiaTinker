@@ -1,0 +1,23 @@
+{
+    "modListVersion": 2,
+    "modList": [{
+        "modid": "tektopiatinker",
+        "name": "Tektopia Tinker",
+        "description": "§fThis extension adds a village tinker for use with §bTektopia§a ${tektopia_version}§f.
+§fBuilt with:
+    §bForge§f ${forge_version}",
+        "version": "${mod_version}",
+        "mcversion": "${minecraft_version}",
+        "url": "https://www.curseforge.com/minecraft/mc-mods/tektopia-tinker",
+        "updateUrl": "https://github.com/Bletch1971/TektopiaTinker",
+        "authorList": ["§6Bletch§r"],
+        "credits": "TangoTek for creating the TekTopia mod",
+        "logoFile": "assets/tektopiatinker/textures/logo.png",
+        "screenshots": [],
+        "parent": "",
+        "requiredMods": ["tektopia"],
+        "dependencies": [],
+        "dependants": [],
+        "useDependencyInformation": true
+    }]
+}
