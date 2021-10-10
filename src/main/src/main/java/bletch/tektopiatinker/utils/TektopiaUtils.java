@@ -35,7 +35,7 @@ public class TektopiaUtils {
         		.filter(i -> i instanceof ItemStructureToken)
         		.distinct()
         		.map(i -> new ItemStack(i))
-        		.sorted((s1, s2) -> s1.getClass().getTypeName().compareTo(s2.getClass().getTypeName()))
+        		.sorted((s1, s2) -> s1.getItem().getItemStackDisplayName(s1).compareTo(s2.getItem().getItemStackDisplayName(s2)))
         		.collect(Collectors.toList());
     }
 

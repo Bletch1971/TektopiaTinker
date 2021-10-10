@@ -224,7 +224,7 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant {
 	protected void populateBuyingList() {
 		if (this.vendorList == null && this.hasVillage()) {
 			this.vendorList = new MerchantRecipeList();
-
+			
 			List<ItemStack> itemStackList = TektopiaUtils.getTektopiaItemStructureTokenStacks();
 
 			int emeraldsPerTinker = Math.max(1, Math.min(64, ModConfig.tinker.emeraldsPerTinker));
@@ -233,6 +233,9 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant {
 			// create the merchant recipe list
 			for (ItemStack itemStackBuy : itemStackList) {
 				if (itemStackBuy == null || itemStackBuy == ItemStack.EMPTY) {
+					continue;
+				}
+				if (itemStackBuy.getItem() == ModItems.structureTownHall) {
 					continue;
 				}
 				

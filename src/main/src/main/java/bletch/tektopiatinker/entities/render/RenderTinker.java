@@ -9,7 +9,7 @@ public class RenderTinker<T extends EntityTinker> extends RenderVillager<T> {
 	public static final RenderTinker.Factory<EntityTinker> FACTORY;
 	
 	public RenderTinker(RenderManager manager) {
-		super(manager, EntityTinker.MODEL_NAME, false, 128, 64, EntityTinker.MODEL_NAME);
+		super(manager, EntityTinker.MODEL_NAME, false, 64, 64, EntityTinker.MODEL_NAME);
 	}
 	
 	public static class Factory<T extends EntityTinker> implements IRenderFactory<T>
