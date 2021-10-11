@@ -1,5 +1,6 @@
 package bletch.tektopiatinker.entities;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +13,6 @@ import bletch.tektopiatinker.core.ModConfig;
 import bletch.tektopiatinker.core.ModDetails;
 import bletch.tektopiatinker.core.ModEntities;
 import bletch.tektopiatinker.entities.ai.EntityAIVisitMerchantStall;
-import bletch.tektopiatinker.utils.TektopiaUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -20,6 +20,7 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -35,7 +36,6 @@ import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.tangotek.tektopia.items.ItemStructureToken;
 import net.tangotek.tektopia.ModItems;
 import net.tangotek.tektopia.ProfessionType;
 import net.tangotek.tektopia.TekVillager;
@@ -225,29 +225,24 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant {
 		if (this.vendorList == null && this.hasVillage()) {
 			this.vendorList = new MerchantRecipeList();
 			
-			List<ItemStack> itemStackList = TektopiaUtils.getTektopiaItemStructureTokenStacks();
+			List<Item> itemList = Arrays.asList(ModItems.structureTokens);
+			itemList.sort((i1, i2) -> i1.getRegistryName().compareTo(i2.getRegistryName()));
 
 			int emeraldsPerTinker = Math.max(1, Math.min(64, ModConfig.tinker.emeraldsPerTinker));
 			int tinkersperday = Math.max(1, Math.min(99999, ModConfig.tinker.tinkersperday));
 			
 			// create the merchant recipe list
-			for (ItemStack itemStackBuy : itemStackList) {
-				if (itemStackBuy == null || itemStackBuy == ItemStack.EMPTY) {
+			for (Item item : itemList) {
+				if (item == null || item == ModItems.structureTownHall)
 					continue;
-				}
-				if (itemStackBuy.getItem() == ModItems.structureTownHall) {
-					continue;
-				}
 				
-				ItemStack itemStackSell = itemStackBuy.copy();
-				if (itemStackSell.getItem() instanceof ItemStructureToken) {
-					ModItems.bindItemToVillage(itemStackSell, this.getVillage());
-				}
+				ItemStack itemStackSell = new ItemStack(item);
+				ModItems.bindItemToVillage(itemStackSell, this.getVillage());
 				
 				if (emeraldsPerTinker == 0) {
-					this.vendorList.add(new MerchantRecipe(itemStackBuy, ItemStack.EMPTY, itemStackSell, 0, tinkersperday));
+					this.vendorList.add(new MerchantRecipe(new ItemStack(item), ItemStack.EMPTY, itemStackSell, 0, tinkersperday));
 				} else {
-					this.vendorList.add(new MerchantRecipe(itemStackBuy, new ItemStack(Items.EMERALD, emeraldsPerTinker), itemStackSell, 0, tinkersperday));
+					this.vendorList.add(new MerchantRecipe(new ItemStack(item), new ItemStack(Items.EMERALD, emeraldsPerTinker), itemStackSell, 0, tinkersperday));
 				}
 			}
 		}

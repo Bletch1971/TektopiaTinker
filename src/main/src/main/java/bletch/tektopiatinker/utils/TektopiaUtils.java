@@ -5,18 +5,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import bletch.tektopiatinker.core.ModDetails;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.tangotek.tektopia.Village;
 import net.tangotek.tektopia.VillageManager;
-import net.tangotek.tektopia.items.ItemStructureToken;
 
 public class TektopiaUtils {
     
@@ -26,17 +20,6 @@ public class TektopiaUtils {
     	}
     	
     	return blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ();
-    }
-	
-	public static List<ItemStack> getTektopiaItemStructureTokenStacks() {
-
-		return StreamSupport.stream(Item.REGISTRY.spliterator(), false)
-        		.filter(i -> i.getRegistryName().getResourceDomain().equalsIgnoreCase(ModDetails.MOD_ID_TEKTOPIA))
-        		.filter(i -> i instanceof ItemStructureToken)
-        		.distinct()
-        		.map(i -> new ItemStack(i))
-        		.sorted((s1, s2) -> s1.getItem().getItemStackDisplayName(s1).compareTo(s2.getItem().getItemStackDisplayName(s2)))
-        		.collect(Collectors.toList());
     }
 
     public static List<Village> getVillages(World world) {
