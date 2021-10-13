@@ -1,6 +1,5 @@
 package bletch.tektopiatinker.utils;
 
-import bletch.common.utils.StringUtils;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 
