@@ -59,6 +59,7 @@ config.tinker.checksvillagesize.tooltip=If enabled, when trying to spawn a tinke
 #= Commands =
 #============
 commands.tinker.usage=/tinker
+
 commands.tinker.spawn.usage=/tinker spawn
 commands.tinker.spawn.success=§aTinker has appeared at %s
 commands.tinker.spawn.failed=§cTinker spawn failed
@@ -66,6 +67,11 @@ commands.tinker.spawn.badconditions=§cTinker spawn failed...spawn conditions no
 commands.tinker.spawn.exists=§eTinker spawn failed...Tinker already located in the village
 commands.tinker.spawn.noposition=§cTinker spawn failed...no spawn position found
 commands.tinker.spawn.novillage=§cTinker spawn failed...no village found
+
+commands.tinker.kill.usage=/tinker kill <0|1>
+commands.tinker.kill.novillage=§cTinker kill failed...no village found
+commands.tinker.kill.noexists=§eTinker kill failed...Tinker not located in the village
+commands.tinker.kill.success=§aTinker has been killed
 
 #=================
 #= Chat Messages =

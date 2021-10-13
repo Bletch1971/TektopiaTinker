@@ -61,23 +61,23 @@ public class TektopiaTinker {
 	@Mod.EventHandler
 	public void onServerStarting(final FMLServerStartingEvent e) {
 		
-		LoggerUtils.debug("Starting registerServerCommand...");
+		LoggerUtils.info("Starting registerServerCommand...");
 		// register commands
 		ModCommands commands = new ModCommands();
 		e.registerServerCommand(commands);
 		commands.registerNodes();
 		
-		LoggerUtils.debug("Finished registerServerCommand...");
+		LoggerUtils.info("Finished registerServerCommand...");
 		
 		World world = e.getServer().getEntityWorld();
 		
-		LoggerUtils.debug("Starting ScheduleManager setup...");
+		LoggerUtils.info("Starting ScheduleManager setup...");
 
 		// create the schedule manager
 		scheduleManager = new ScheduleManager(world);
 		scheduleManager.addScheduler(new TinkerScheduler());
 		
-		LoggerUtils.debug("Finished ScheduleManager setup...");
+		LoggerUtils.info("Finished ScheduleManager setup...");
 	}
 	
     @EventBusSubscriber

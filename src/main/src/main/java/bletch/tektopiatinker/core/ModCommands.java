@@ -1,5 +1,6 @@
 package bletch.tektopiatinker.core;
 
+import bletch.tektopiatinker.commands.CommandKill;
 import bletch.tektopiatinker.commands.CommandSpawn;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -13,6 +14,7 @@ public class ModCommands extends CommandTreeBase {
 	public static final String COMMAND_PREFIX_WITH_MODID = ModDetails.MOD_ID + "." + COMMAND_PREFIX;
 	
 	public ModCommands() {
+		super.addSubcommand(new CommandKill());
 		super.addSubcommand(new CommandSpawn());
 	}
 

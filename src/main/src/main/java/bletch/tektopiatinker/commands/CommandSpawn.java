@@ -35,30 +35,30 @@ public class CommandSpawn extends CommandVillageBase {
 		World world = entityPlayer != null ? entityPlayer.getEntityWorld() : null;
 		
 		if (world == null || world.isRaining() || Village.isNightTime(world)) {
-			notifyCommandListener(sender, this, "commands.tinker.spawn.badconditions", new Object[0]);
-			LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.badconditions", new Object[0]), true);
+			notifyCommandListener(sender, this, ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".badconditions", new Object[0]);
+			LoggerUtils.info(TextUtils.translate(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".badconditions", new Object[0]), true);
 			return;
 		}
 		
 		VillageManager villageManager = world != null ? VillageManager.get(world) : null;
 		Village village = villageManager != null && entityPlayer != null ? villageManager.getVillageAt(entityPlayer.getPosition()) : null;
 		if (village == null) {
-			notifyCommandListener(sender, this, "commands.tinker.spawn.novillage", new Object[0]);
-			LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.novillage", new Object[0]), true);
+			notifyCommandListener(sender, this, ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".novillage", new Object[0]);
+			LoggerUtils.info(TextUtils.translate(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".novillage", new Object[0]), true);
 			return;
 		}
 
 		BlockPos spawnPosition = village.getEdgeNode();
 		if (spawnPosition == null) {
-			notifyCommandListener(sender, this, "commands.tinker.spawn.noposition", new Object[0]);
-			LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.noposition", new Object[0]), true);
+			notifyCommandListener(sender, this, ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".noposition", new Object[0]);
+			LoggerUtils.info(TextUtils.translate(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".noposition", new Object[0]), true);
 			return;
 		}
 
         List<EntityTinker> entityList = world.getEntitiesWithinAABB(EntityTinker.class, village.getAABB().grow(Village.VILLAGE_SIZE));
         if (entityList.size() > 0) {
-			notifyCommandListener(sender, this, "commands.tinker.spawn.exists", new Object[0]);
-			LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.exists", new Object[0]), true);
+			notifyCommandListener(sender, this, ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".exists", new Object[0]);
+			LoggerUtils.info(TextUtils.translate(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".exists", new Object[0]), true);
 			return;
         }
         
@@ -66,13 +66,13 @@ public class CommandSpawn extends CommandVillageBase {
 		Boolean entitySpawned = TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w));
 		
 		if (!entitySpawned) {
-			notifyCommandListener(sender, this, "commands.tinker.spawn.failed", new Object[0]);
-			LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.failed", new Object[0]), true);
+			notifyCommandListener(sender, this, ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".failed", new Object[0]);
+			LoggerUtils.info(TextUtils.translate(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".failed", new Object[0]), true);
 			return;
 		}
 		
-		notifyCommandListener(sender, this, "commands.tinker.spawn.success", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) });
-		LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.success", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) }), true);
+		notifyCommandListener(sender, this, ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".success", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) });
+		LoggerUtils.info(TextUtils.translate(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".success", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) }), true);
 	}
     
 }
