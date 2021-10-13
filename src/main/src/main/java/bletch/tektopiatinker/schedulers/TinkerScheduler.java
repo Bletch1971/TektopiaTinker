@@ -5,6 +5,8 @@ import java.util.List;
 import bletch.tektopiatinker.core.ModConfig;
 import bletch.tektopiatinker.entities.EntityTinker;
 import bletch.tektopiatinker.utils.TektopiaUtils;
+import bletch.tektopiatinker.utils.LoggerUtils;
+import bletch.tektopiatinker.utils.TextUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -48,7 +50,11 @@ public class TinkerScheduler implements IScheduler {
 
 			// get the village level (1-5) and test to spawn - bigger villages will reduce the number of spawns of the Tinker.
 			int villageLevel = ModConfig.tinker.checksVillageSize ? TektopiaUtils.getVillageLevel(v) : 1;
-			if (villageLevel > 0 && world.rand.nextInt(villageLevel) == 0) {
+			int villageCheck = world.rand.nextInt(villageLevel);
+			
+			if (villageLevel > 0 && villageCheck == 0) {
+				
+				LoggerUtils.debug(TextUtils.translate("message.trader.villagechecksuccess", new Object[] { villageLevel, villageCheck }), true);
 				
 				// get a list of the Tinkers in the village
 				List<EntityTinker> entityList = world.getEntitiesWithinAABB(EntityTinker.class, v.getAABB().grow(Village.VILLAGE_SIZE));
@@ -59,13 +65,18 @@ public class TinkerScheduler implements IScheduler {
 					// attempt spawn
 					if (TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w))) {
 						v.sendChatMessage(new TextComponentTranslation("message.tinker.spawned", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) }));
+						LoggerUtils.debug(TextUtils.translate("message.tinker.spawned", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) }), true);
 					} else {
 						v.sendChatMessage(new TextComponentTranslation("message.tinker.noposition", new Object[0]));
+						LoggerUtils.debug(TextUtils.translate("message.tinker.noposition", new Object[0]), true);
 					}
 					
 				} else {
-					v.debugOut(new TextComponentTranslation("message.tinker.exists", new Object[0]).getFormattedText());
+					LoggerUtils.debug(TextUtils.translate("message.tinker.exists", new Object[0]), true);
 				}
+				
+			} else {
+				LoggerUtils.debug(TextUtils.translate("message.tinker.villagecheckfailed", new Object[] { villageLevel, villageCheck }), true);
 			}
 		});
 	}

@@ -36,6 +36,13 @@
 #= Config =
 #==========
 
+#== Debug ==
+config.debug=Debug
+config.debug.tooltip=Debug settings
+
+config.debug.enableDebug=Enable Debug
+config.debug.enableDebug.tooltip=If true, debug information will be output to the console.
+
 #== Tinker ==
 config.tinker=Tinker
 config.tinker.tooltip=Tinker settings
@@ -67,6 +74,8 @@ commands.tinker.spawn.novillage=§cTinker spawn failed...no village found
 message.tinker.exists=§eTinker already located in the village
 message.tinker.noposition=§cCould not find a spawn location for the Tinker
 message.tinker.spawned=§aTinker has appeared at %s
+message.tinker.villagecheckfailed=§cTinker village check failed, village size %s; check value %s
+message.tinker.villagechecksuccess=§cTinker village check success, village size %s; check value %s
 
 
 #============

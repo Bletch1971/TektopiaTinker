@@ -10,6 +10,7 @@ import bletch.tektopiatinker.core.ModDetails;
 import bletch.tektopiatinker.core.ModEntities;
 import bletch.tektopiatinker.schedulers.ScheduleManager;
 import bletch.tektopiatinker.schedulers.TinkerScheduler;
+import bletch.tektopiatinker.utils.LoggerUtils;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -59,16 +60,24 @@ public class TektopiaTinker {
     
 	@Mod.EventHandler
 	public void onServerStarting(final FMLServerStartingEvent e) {
+		
+		LoggerUtils.debug("Starting registerServerCommand...");
 		// register commands
 		ModCommands commands = new ModCommands();
 		e.registerServerCommand(commands);
 		commands.registerNodes();
 		
+		LoggerUtils.debug("Finished registerServerCommand...");
+		
 		World world = e.getServer().getEntityWorld();
+		
+		LoggerUtils.debug("Starting ScheduleManager setup...");
 
 		// create the schedule manager
 		scheduleManager = new ScheduleManager(world);
 		scheduleManager.addScheduler(new TinkerScheduler());
+		
+		LoggerUtils.debug("Finished ScheduleManager setup...");
 	}
 	
     @EventBusSubscriber

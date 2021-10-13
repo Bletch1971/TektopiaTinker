@@ -1,9 +1,12 @@
 package bletch.tektopiatinker.commands;
 
 import java.util.List;
+
 import bletch.tektopiatinker.core.ModCommands;
 import bletch.tektopiatinker.entities.EntityTinker;
+import bletch.tektopiatinker.utils.LoggerUtils;
 import bletch.tektopiatinker.utils.TektopiaUtils;
+import bletch.tektopiatinker.utils.TextUtils;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -33,6 +36,7 @@ public class CommandSpawn extends CommandVillageBase {
 		
 		if (world == null || world.isRaining() || Village.isNightTime(world)) {
 			notifyCommandListener(sender, this, "commands.tinker.spawn.badconditions", new Object[0]);
+			LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.badconditions", new Object[0]), true);
 			return;
 		}
 		
@@ -40,18 +44,21 @@ public class CommandSpawn extends CommandVillageBase {
 		Village village = villageManager != null && entityPlayer != null ? villageManager.getVillageAt(entityPlayer.getPosition()) : null;
 		if (village == null) {
 			notifyCommandListener(sender, this, "commands.tinker.spawn.novillage", new Object[0]);
+			LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.novillage", new Object[0]), true);
 			return;
 		}
 
 		BlockPos spawnPosition = village.getEdgeNode();
 		if (spawnPosition == null) {
 			notifyCommandListener(sender, this, "commands.tinker.spawn.noposition", new Object[0]);
+			LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.noposition", new Object[0]), true);
 			return;
 		}
 
         List<EntityTinker> entityList = world.getEntitiesWithinAABB(EntityTinker.class, village.getAABB().grow(Village.VILLAGE_SIZE));
         if (entityList.size() > 0) {
 			notifyCommandListener(sender, this, "commands.tinker.spawn.exists", new Object[0]);
+			LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.exists", new Object[0]), true);
 			return;
         }
         
@@ -60,10 +67,12 @@ public class CommandSpawn extends CommandVillageBase {
 		
 		if (!entitySpawned) {
 			notifyCommandListener(sender, this, "commands.tinker.spawn.failed", new Object[0]);
+			LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.failed", new Object[0]), true);
 			return;
 		}
 		
 		notifyCommandListener(sender, this, "commands.tinker.spawn.success", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) });
+		LoggerUtils.debug(TextUtils.translate("commands.tinker.spawn.success", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) }), true);
 	}
     
 }

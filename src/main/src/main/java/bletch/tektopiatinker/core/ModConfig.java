@@ -24,8 +24,19 @@ public class ModConfig {
 		
 	}
 	
+	@Config.LangKey("config.debug")
+	public static final Debug debug = new Debug();
+	
 	@Config.LangKey("config.tinker")
 	public static final Tinker tinker = new Tinker();
+	
+	public static class Debug {
+		
+		@Config.Comment("If true, debug information will be output to the console.")
+		@Config.LangKey("config.debug.enableDebug")
+		public boolean enableDebug = false;	
+		
+	}
 	
 	public static class Tinker {
 		
