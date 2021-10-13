@@ -47,6 +47,8 @@ public class TinkerScheduler implements IScheduler {
 
 		// cycle through each village
 		villages.forEach((v) -> {
+			
+			String villageName = v.getName();
 
 			// get the village level (1-5) and test to spawn - bigger villages will reduce the number of spawns of the Tinker.
 			int villageLevel = ModConfig.tinker.checksVillageSize ? TektopiaUtils.getVillageLevel(v) : 1;
@@ -54,7 +56,7 @@ public class TinkerScheduler implements IScheduler {
 			
 			if (villageLevel > 0 && villageCheck == 0) {
 				
-				LoggerUtils.info(TextUtils.translate("message.trader.villagechecksuccess", new Object[] { villageLevel, villageCheck }), true);
+				LoggerUtils.info(TextUtils.translate("message.tinker.villagechecksuccess", new Object[] { villageName, villageLevel, villageCheck }), true);
 				
 				// get a list of the Tinkers in the village
 				List<EntityTinker> entityList = world.getEntitiesWithinAABB(EntityTinker.class, v.getAABB().grow(Village.VILLAGE_SIZE));
@@ -65,18 +67,18 @@ public class TinkerScheduler implements IScheduler {
 					// attempt spawn
 					if (TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w))) {
 						v.sendChatMessage(new TextComponentTranslation("message.tinker.spawned", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) }));
-						LoggerUtils.info(TextUtils.translate("message.tinker.spawned", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) }), true);
+						LoggerUtils.info(TextUtils.translate("message.tinker.spawned.village", new Object[] { villageName, TektopiaUtils.formatBlockPos(spawnPosition) }), true);
 					} else {
 						v.sendChatMessage(new TextComponentTranslation("message.tinker.noposition", new Object[0]));
-						LoggerUtils.info(TextUtils.translate("message.tinker.noposition", new Object[0]), true);
+						LoggerUtils.info(TextUtils.translate("message.tinker.noposition.village", new Object[] { villageName }), true);
 					}
 					
 				} else {
-					LoggerUtils.info(TextUtils.translate("message.tinker.exists", new Object[0]), true);
+					LoggerUtils.info(TextUtils.translate("message.tinker.exists", new Object[] { villageName }), true);
 				}
 				
 			} else {
-				LoggerUtils.info(TextUtils.translate("message.tinker.villagecheckfailed", new Object[] { villageLevel, villageCheck }), true);
+				LoggerUtils.info(TextUtils.translate("message.tinker.villagecheckfailed", new Object[] { villageName, villageLevel, villageCheck }), true);
 			}
 		});
 	}
