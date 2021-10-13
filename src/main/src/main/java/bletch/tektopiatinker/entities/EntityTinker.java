@@ -12,7 +12,7 @@ import com.leviathanstudio.craftstudio.common.animation.AnimationHandler;
 import bletch.tektopiatinker.core.ModConfig;
 import bletch.tektopiatinker.core.ModDetails;
 import bletch.tektopiatinker.core.ModEntities;
-import bletch.tektopiatinker.entities.ai.EntityAIVisitMerchantStall;
+import bletch.tektopiatinker.entities.ai.EntityAITinkerPatrolPoint;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -123,7 +123,7 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant {
 			this.setDead();
 		}));
 		
-		this.addTask(50, new EntityAIVisitMerchantStall(this, (p) -> {
+		this.addTask(50, new EntityAITinkerPatrolPoint(this, (p) -> {
 			return this.hasVillage();
 		}, 3, 60));
 		
