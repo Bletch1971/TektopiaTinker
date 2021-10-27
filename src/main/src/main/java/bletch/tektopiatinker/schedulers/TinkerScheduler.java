@@ -25,6 +25,8 @@ public class TinkerScheduler implements IScheduler {
 	public void resetNight() {
 		if (this.resetNight)
 			return;
+		
+		LoggerUtils.info("TinkerScheduler - resetNight called", true);
 
 		// if it is night time, then clear the village checks
 		this.checkedVillages = false;
@@ -34,8 +36,10 @@ public class TinkerScheduler implements IScheduler {
 	@Override
 	public void update(World world) {
 		// do not process any further if we have already performed the check, it is raining or it is night
-		if (this.checkedVillages || world == null || world.isRaining() || Village.isNightTime(world))
+		if (this.checkedVillages || world == null || world.isRaining() || !EntityTinker.isWorkTime(world, 0))
 			return;
+		
+		LoggerUtils.info("TinkerScheduler - update called", true);
 		
 		this.resetNight = false;
 		this.checkedVillages = true;
@@ -51,8 +55,8 @@ public class TinkerScheduler implements IScheduler {
 			String villageName = v.getName();
 
 			// get the village level (1-5) and test to spawn - bigger villages will reduce the number of spawns of the Tinker.
-			int villageLevel = ModConfig.tinker.checksVillageSize ? TektopiaUtils.getVillageLevel(v) : 1;
-			int villageCheck = world.rand.nextInt(villageLevel);
+			int villageLevel = TektopiaUtils.getVillageLevel(v);
+			int villageCheck = ModConfig.tinker.checksVillageSize ? world.rand.nextInt(villageLevel) : 0;
 			
 			if (villageLevel > 0 && villageCheck == 0) {
 				
@@ -62,14 +66,13 @@ public class TinkerScheduler implements IScheduler {
 				List<EntityTinker> entityList = world.getEntitiesWithinAABB(EntityTinker.class, v.getAABB().grow(Village.VILLAGE_SIZE));
 				if (entityList.size() == 0) {
 					
-					BlockPos spawnPosition = v.getEdgeNode();
+					BlockPos spawnPosition = TektopiaUtils.getVillageSpawnPoint(world, v);
 
 					// attempt spawn
 					if (TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w))) {
-						v.sendChatMessage(new TextComponentTranslation("message.tinker.spawned", new Object[] { TektopiaUtils.formatBlockPos(spawnPosition) }));
+						v.sendChatMessage(new TextComponentTranslation("message.tinker.spawned", new Object[0]));
 						LoggerUtils.info(TextUtils.translate("message.tinker.spawned.village", new Object[] { villageName, TektopiaUtils.formatBlockPos(spawnPosition) }), true);
 					} else {
-						v.sendChatMessage(new TextComponentTranslation("message.tinker.noposition", new Object[0]));
 						LoggerUtils.info(TextUtils.translate("message.tinker.noposition.village", new Object[] { villageName }), true);
 					}
 					

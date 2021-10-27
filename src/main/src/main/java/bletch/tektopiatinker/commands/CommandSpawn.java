@@ -27,9 +27,18 @@ public class CommandSpawn extends TinkerCommandBase {
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (args.length > 0) {
+		if (args.length > 1) {
 			throw new WrongUsageException(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage", new Object[0]);
 		} 
+		
+		Boolean spawnNearMe = false;
+		if (args.length > 0) {
+			if (!args[0].equalsIgnoreCase("me")) {
+				throw new WrongUsageException(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage", new Object[0]);
+			}
+			
+			spawnNearMe = true;
+		}
 		
 		EntityPlayer entityPlayer = super.getCommandSenderAsPlayer(sender);
 		World world = entityPlayer != null ? entityPlayer.getEntityWorld() : null;
@@ -42,13 +51,15 @@ public class CommandSpawn extends TinkerCommandBase {
 		
 		VillageManager villageManager = world != null ? VillageManager.get(world) : null;
 		Village village = villageManager != null && entityPlayer != null ? villageManager.getVillageAt(entityPlayer.getPosition()) : null;
+		
 		if (village == null) {
 			notifyCommandListener(sender, this, ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".novillage", new Object[0]);
 			LoggerUtils.info(TextUtils.translate(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".novillage", new Object[0]), true);
 			return;
 		}
 
-		BlockPos spawnPosition = village.getEdgeNode();
+		BlockPos spawnPosition = spawnNearMe ? entityPlayer.getPosition().north(2) : TektopiaUtils.getVillageSpawnPoint(world, village);
+		
 		if (spawnPosition == null) {
 			notifyCommandListener(sender, this, ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".noposition", new Object[0]);
 			LoggerUtils.info(TextUtils.translate(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".noposition", new Object[0]), true);
@@ -56,6 +67,7 @@ public class CommandSpawn extends TinkerCommandBase {
 		}
 
         List<EntityTinker> entityList = world.getEntitiesWithinAABB(EntityTinker.class, village.getAABB().grow(Village.VILLAGE_SIZE));
+        
         if (entityList.size() > 0) {
 			notifyCommandListener(sender, this, ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".exists", new Object[0]);
 			LoggerUtils.info(TextUtils.translate(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".exists", new Object[0]), true);
@@ -63,9 +75,7 @@ public class CommandSpawn extends TinkerCommandBase {
         }
         
 		// attempt to spawn the tinker
-		Boolean entitySpawned = TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w));
-		
-		if (!entitySpawned) {
+		if (!TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w))) {
 			notifyCommandListener(sender, this, ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".failed", new Object[0]);
 			LoggerUtils.info(TextUtils.translate(ModCommands.COMMAND_PREFIX + COMMAND_NAME + ".failed", new Object[0]), true);
 			return;

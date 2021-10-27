@@ -60,7 +60,7 @@ config.tinker.checksvillagesize.tooltip=If enabled, when trying to spawn a tinke
 #============
 commands.tinker.usage=/tinker
 
-commands.tinker.spawn.usage=/tinker spawn
+commands.tinker.spawn.usage=/tinker spawn [me]
 commands.tinker.spawn.success=§aTinker has appeared at %s
 commands.tinker.spawn.failed=§cTinker spawn failed
 commands.tinker.spawn.badconditions=§cTinker spawn failed...spawn conditions not valid
@@ -78,9 +78,8 @@ commands.tinker.kill.success=§aTinker has been killed
 #=================
 
 message.tinker.exists=§eTinker already located in village %s
-message.tinker.noposition=§cCould not find a spawn location for the Tinker
 message.tinker.noposition.village=§cCould not find a spawn location for the Tinker in village %s
-message.tinker.spawned=§aTinker has appeared at %s
+message.tinker.spawned=§aTinker has been spotted approaching the village
 message.tinker.spawned.village=§aTinker has appeared in village %s at %s
 message.tinker.villagecheckfailed=§cTinker village check failed, village  %s; size %s; check value %s
 message.tinker.villagechecksuccess=§cTinker village check success, village  %s; size %s; check value %s
