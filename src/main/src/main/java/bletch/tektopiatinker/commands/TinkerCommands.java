@@ -1,21 +1,20 @@
-package bletch.tektopiatinker.core;
+package bletch.tektopiatinker.commands;
 
-import bletch.tektopiatinker.commands.CommandKill;
-import bletch.tektopiatinker.commands.CommandSpawn;
+import bletch.tektopiatinker.core.ModDetails;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.command.CommandTreeBase;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-public class ModCommands extends CommandTreeBase {
+public class TinkerCommands extends CommandTreeBase {
 
 	public static final String COMMAND_PREFIX = "commands.tinker.";
 	public static final String COMMAND_PREFIX_WITH_MODID = ModDetails.MOD_ID + "." + COMMAND_PREFIX;
 	
-	public ModCommands() {
-		super.addSubcommand(new CommandKill());
-		super.addSubcommand(new CommandSpawn());
+	public TinkerCommands() {
+		super.addSubcommand(new CommandTinkerKill());
+		super.addSubcommand(new CommandTinkerSpawn());
 	}
 
 	public void registerNodes() {

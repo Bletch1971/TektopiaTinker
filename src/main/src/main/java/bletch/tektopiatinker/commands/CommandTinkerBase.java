@@ -3,18 +3,17 @@ package bletch.tektopiatinker.commands;
 import java.util.Collections;
 import java.util.List;
 
-import bletch.tektopiatinker.core.ModCommands;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-public abstract class TinkerCommandBase extends CommandBase {
+public abstract class CommandTinkerBase extends CommandBase {
 	
 	protected final String name;
 
-	public TinkerCommandBase(String name) {
+	public CommandTinkerBase(String name) {
 		this.name = name;
 	}
 
@@ -30,13 +29,13 @@ public abstract class TinkerCommandBase extends CommandBase {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return ModCommands.COMMAND_PREFIX + this.name + ".usage";
+		return TinkerCommands.COMMAND_PREFIX + this.name + ".usage";
 	}
 	
 	@Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
 		try {
-			return PermissionAPI.hasPermission(super.getCommandSenderAsPlayer(sender), ModCommands.COMMAND_PREFIX_WITH_MODID + this.getName());
+			return PermissionAPI.hasPermission(super.getCommandSenderAsPlayer(sender), TinkerCommands.COMMAND_PREFIX_WITH_MODID + this.getName());
 		} catch (PlayerNotFoundException ex) {
 			ex.printStackTrace();
 			return false;

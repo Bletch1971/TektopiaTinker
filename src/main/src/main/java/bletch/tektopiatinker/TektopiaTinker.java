@@ -4,7 +4,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.leviathanstudio.craftstudio.client.registry.CraftStudioLoader;
 
-import bletch.tektopiatinker.core.ModCommands;
+import bletch.tektopiatinker.commands.TinkerCommands;
 import bletch.tektopiatinker.core.ModCommonProxy;
 import bletch.tektopiatinker.core.ModDetails;
 import bletch.tektopiatinker.core.ModEntities;
@@ -60,14 +60,15 @@ public class TektopiaTinker {
     
 	@Mod.EventHandler
 	public void onServerStarting(final FMLServerStartingEvent e) {
-		
-		LoggerUtils.info("Starting registerServerCommand...");
-		// register commands
-		ModCommands commands = new ModCommands();
+
+		LoggerUtils.info("Starting command registrations...");
+
+		LoggerUtils.info("Registering tinker commands");
+		TinkerCommands commands = new TinkerCommands();
 		e.registerServerCommand(commands);
 		commands.registerNodes();
-		
-		LoggerUtils.info("Finished registerServerCommand...");
+
+		LoggerUtils.info("Finished command registrations");
 		
 		World world = e.getServer().getEntityWorld();
 		
@@ -77,7 +78,7 @@ public class TektopiaTinker {
 		scheduleManager = new ScheduleManager(world);
 		scheduleManager.addScheduler(new TinkerScheduler());
 		
-		LoggerUtils.info("Finished ScheduleManager setup...");
+		LoggerUtils.info("Finished ScheduleManager setup");
 	}
 	
     @EventBusSubscriber
