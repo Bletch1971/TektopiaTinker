@@ -51,37 +51,45 @@ public class TinkerScheduler implements IScheduler {
 
 		// cycle through each village
 		villages.forEach((v) -> {
-			
+
+			List<EntityTinker> entityList = null;
 			String villageName = v.getName();
-
-			// get the village level (1-5) and test to spawn - bigger villages will reduce the number of spawns of the Tinker.
 			int villageLevel = TektopiaUtils.getVillageLevel(v);
-			int villageCheck = ModConfig.tinker.checksVillageSize ? world.rand.nextInt(villageLevel) : 0;
 			
-			if (villageLevel > 0 && villageCheck == 0) {
-				
-				LoggerUtils.info(TextUtils.translate("message.tinker.villagechecksuccess", new Object[] { villageName, villageLevel, villageCheck }), true);
-				
-				// get a list of the Tinkers in the village
-				List<EntityTinker> entityList = world.getEntitiesWithinAABB(EntityTinker.class, v.getAABB().grow(Village.VILLAGE_SIZE));
-				if (entityList.size() == 0) {
-					
-					BlockPos spawnPosition = TektopiaUtils.getVillageSpawnPoint(world, v);
+			for (int tinkerType : EntityTinker.getTinkerTypes()) {
 
-					// attempt spawn
-					if (TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w))) {
-						v.sendChatMessage(new TextComponentTranslation("message.tinker.spawned", new Object[0]));
-						LoggerUtils.info(TextUtils.translate("message.tinker.spawned.village", new Object[] { villageName, TektopiaUtils.formatBlockPos(spawnPosition) }), true);
+				// get the village level (1-5) and test to spawn - bigger villages will reduce the number of spawns of the Tinker.
+				int villageCheck = ModConfig.tinker.checksVillageSize ? world.rand.nextInt(villageLevel) : 0;
+				
+				if (villageLevel > 0 && villageCheck == 0) {
+					
+					LoggerUtils.info(TextUtils.translate("message.tinker.villagechecksuccess", new Object[] { villageName, villageLevel, villageCheck }), true);
+					
+					// get a list of the Tinkers in the village
+					if (entityList == null)
+						entityList = world.getEntitiesWithinAABB(EntityTinker.class, v.getAABB().grow(Village.VILLAGE_SIZE));
+					
+					long tinkerTypeCount = entityList.stream().filter((r) -> r.getTinkerType() == tinkerType).count();
+					
+					if (tinkerTypeCount == 0) {
+						
+						BlockPos spawnPosition = TektopiaUtils.getVillageSpawnPoint(world, v);
+
+						// attempt spawn
+						if (TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w, tinkerType))) {
+							v.sendChatMessage(new TextComponentTranslation("message.tinker.spawned", new Object[0]));
+							LoggerUtils.info(TextUtils.translate("message.tinker.spawned.village", new Object[] { villageName, TektopiaUtils.formatBlockPos(spawnPosition) }), true);
+						} else {
+							LoggerUtils.info(TextUtils.translate("message.tinker.noposition.village", new Object[] { villageName }), true);
+						}
+						
 					} else {
-						LoggerUtils.info(TextUtils.translate("message.tinker.noposition.village", new Object[] { villageName }), true);
+						LoggerUtils.info(TextUtils.translate("message.tinker.exists", new Object[] { villageName }), true);
 					}
 					
 				} else {
-					LoggerUtils.info(TextUtils.translate("message.tinker.exists", new Object[] { villageName }), true);
+					LoggerUtils.info(TextUtils.translate("message.tinker.villagecheckfailed", new Object[] { villageName, villageLevel, villageCheck }), true);
 				}
-				
-			} else {
-				LoggerUtils.info(TextUtils.translate("message.tinker.villagecheckfailed", new Object[] { villageName, villageLevel, villageCheck }), true);
 			}
 		});
 	}

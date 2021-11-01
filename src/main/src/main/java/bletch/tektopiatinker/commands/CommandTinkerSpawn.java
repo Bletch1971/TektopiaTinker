@@ -26,18 +26,32 @@ public class CommandTinkerSpawn extends CommandTinkerBase {
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (args.length > 1) {
+		if (args.length < 1 || args.length > 2) {
 			throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage", new Object[0]);
 		} 
 		
 		Boolean spawnNearMe = false;
-		if (args.length > 0) {
-			if (!args[0].equalsIgnoreCase("me")) {
+		if (args.length > 1) {
+			if (!args[1].equalsIgnoreCase("me")) {
 				throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage", new Object[0]);
 			}
 			
 			spawnNearMe = true;
 		}
+		
+		int argValue = 0;
+		try {
+			argValue = Integer.parseInt(args[0]);
+			
+			if (!EntityTinker.isTinkerTypeValid(argValue)) {
+				throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage", new Object[0]);
+			}
+		}
+		catch (Exception ex) {
+			throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage", new Object[0]);
+		}
+		
+        int tinkerType = argValue;
 		
 		EntityPlayer entityPlayer = super.getCommandSenderAsPlayer(sender);
 		World world = entityPlayer != null ? entityPlayer.getEntityWorld() : null;
@@ -57,7 +71,7 @@ public class CommandTinkerSpawn extends CommandTinkerBase {
 			return;
 		}
 
-		BlockPos spawnPosition = spawnNearMe ? entityPlayer.getPosition().north(2) : TektopiaUtils.getVillageSpawnPoint(world, village);
+		BlockPos spawnPosition = spawnNearMe ? entityPlayer.getPosition() : TektopiaUtils.getVillageSpawnPoint(world, village);
 		
 		if (spawnPosition == null) {
 			notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".noposition", new Object[0]);
@@ -66,15 +80,16 @@ public class CommandTinkerSpawn extends CommandTinkerBase {
 		}
 
         List<EntityTinker> entityList = world.getEntitiesWithinAABB(EntityTinker.class, village.getAABB().grow(Village.VILLAGE_SIZE));
+		long tinkerTypeCount = entityList.stream().filter((r) -> r.getTinkerType() == tinkerType).count();
         
-        if (entityList.size() > 0) {
+        if (tinkerTypeCount > 0) {
 			notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".exists", new Object[0]);
 			LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".exists", new Object[0]), true);
 			return;
         }
         
 		// attempt to spawn the tinker
-		if (!TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w))) {
+		if (!TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w, tinkerType))) {
 			notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".failed", new Object[0]);
 			LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".failed", new Object[0]), true);
 			return;

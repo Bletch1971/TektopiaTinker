@@ -1,5 +1,6 @@
 package bletch.tektopiatinker.entities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -56,8 +57,11 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant, INpc {
 	public static final String RESOURCE_PATH = "tinker";
 	public static final String ANIMATION_MODEL_NAME = MODEL_NAME + "_m";
 
+	protected static final DataParameter<Integer> TINKER_TYPE;
 	protected static final DataParameter<String> ANIMATION_KEY;
 	protected static final AnimationHandler<EntityTinker> animationHandler;
+	
+	private static final List<Integer> tinkerTypes = Arrays.asList(0, 1); // 0 = Structure Tokens, 1 = Profession Tokens
 
 	private BlockPos firstCheck;
 	@Nullable
@@ -67,8 +71,14 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant, INpc {
 
 	public EntityTinker(World worldIn) {
 		super(worldIn, (ProfessionType)null, VillagerRole.VENDOR.value | VillagerRole.VISITOR.value);
+	}
+
+	public EntityTinker(World worldIn, int tinkerType) {
+		this(worldIn);
 		
 		this.sleepOffset = 0;
+		
+		setTinkerType(tinkerType);
 	}
 
 	protected void addTask(int priority, EntityAIBase task) {
@@ -145,6 +155,14 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant, INpc {
 		return this.vendorList;
 	}
 
+	public int getTinkerType() {
+		return this.dataManager.get(TINKER_TYPE);
+	}
+
+	public static List<Integer> getTinkerTypes() {
+		return tinkerTypes;
+	}
+
 	public World getWorld() {
 		return this.world;
 	}
@@ -158,16 +176,27 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant, INpc {
 	}
 
 	public com.google.common.base.Predicate<Entity> isHostile() {
-		return (e) -> {
-			return false;
-		};
+		return (e) -> false;
 	}
 
 	public boolean isLearningTime() {
 		return false;
 	}
+	
+	public boolean isMale() {
+		return this.getTinkerType() == 0;
+	}
 
 	public boolean isSleepingTime() {
+		return false;
+	}
+	
+	public static Boolean isTinkerTypeValid(int tinkerType) {
+		for (int value : tinkerTypes) {
+			if (value == tinkerType)
+				return true;
+		}
+		
 		return false;
 	}
 
@@ -183,7 +212,19 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant, INpc {
 		if (this.vendorList == null && this.hasVillage()) {
 			this.vendorList = new MerchantRecipeList();
 			
-			List<Item> itemList = Arrays.asList(ModItems.structureTokens);
+			List<Item> itemList = null;
+			
+			switch(this.getTinkerType()) {
+			case 0:
+				itemList = Arrays.asList(ModItems.structureTokens);
+				break;
+			case 1:
+				itemList = new ArrayList<Item>(ModItems.professionTokens.values());
+				break;
+			default:
+				return;
+			}
+			
 			itemList.sort((i1, i2) -> i1.getRegistryName().compareTo(i2.getRegistryName()));
 
 			int emeraldsPerTinker = Math.max(1, Math.min(64, ModConfig.tinker.emeraldsPerTinker));
@@ -191,7 +232,7 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant, INpc {
 			
 			// create the merchant recipe list
 			for (Item item : itemList) {
-				if (item == null || item == ModItems.structureTownHall)
+				if (item == null || item == ModItems.structureTownHall || item == ModItems.itemNitWit || item == ModItems.itemChild || item == ModItems.itemNomad)
 					continue;
 				
 				ItemStack itemStackSell = new ItemStack(item);
@@ -234,6 +275,10 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant, INpc {
 
 	@SideOnly(Side.CLIENT)
 	public void setRecipes(@Nullable MerchantRecipeList recipeList) {
+	}
+	
+	public void setTinkerType(int recyclerType) {
+		this.dataManager.set(TINKER_TYPE, isTinkerTypeValid(recyclerType) ? recyclerType : Integer.valueOf(0));
 	}
 
 	protected void setupAITasks() {
@@ -300,6 +345,10 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant, INpc {
 	public void func_70037_a(NBTTagCompound compound) {
 		super.func_70037_a(compound);
 
+		if (compound.hasKey("tinkerType")) {
+			this.setTinkerType(compound.getInteger("tinkerType"));
+		}
+
 		if (compound.hasKey("Offers", 10)) {
 			NBTTagCompound nbttagcompound = compound.getCompoundTag("Offers");
 			this.vendorList = new MerchantRecipeList(nbttagcompound);
@@ -309,13 +358,15 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant, INpc {
 	// writeEntityToNBT
 	public void func_70014_b(NBTTagCompound compound) {
 		super.func_70014_b(compound);
-		
+
+		compound.setInteger("tinkerType", this.getTinkerType());
 		if (this.vendorList != null) {
 			compound.setTag("Offers", this.vendorList.getRecipiesAsTags());
 		}
 	}
 
 	static {
+		TINKER_TYPE = EntityDataManager.createKey(EntityTinker.class, DataSerializers.VARINT);
 		ANIMATION_KEY = EntityDataManager.createKey(EntityTinker.class, DataSerializers.STRING);
 		
 		animationHandler = TekVillager.getNewAnimationHandler(EntityTinker.class);
@@ -360,11 +411,13 @@ public class EntityTinker extends EntityVillagerTek implements IMerchant, INpc {
 	@Override
 	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
+		this.dataManager.set(TINKER_TYPE, Integer.valueOf(0));
 		this.dataManager.set(ANIMATION_KEY, "");
 	}
 
 	@Override
 	protected void entityInit() {
+		this.dataManager.register(TINKER_TYPE, Integer.valueOf(0));
 		this.dataManager.register(ANIMATION_KEY, "");
 		super.entityInit();
 	}

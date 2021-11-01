@@ -1,6 +1,7 @@
 package bletch.tektopiatinker.commands;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import bletch.tektopiatinker.entities.EntityTinker;
 import bletch.tektopiatinker.utils.LoggerUtils;
@@ -10,6 +11,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.tangotek.tektopia.Village;
 import net.tangotek.tektopia.VillageManager;
@@ -24,9 +26,24 @@ public class CommandTinkerKill extends CommandTinkerBase {
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (args.length > 0) {
+		if (args.length > 1) {
 			throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage", new Object[0]);
 		} 
+		
+		int argValue = -1;
+		if (args.length > 0) {
+			try {
+				argValue = Integer.parseInt(args[0]);
+				
+				if (!EntityTinker.isTinkerTypeValid(argValue)) {
+					throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage", new Object[0]);
+				}
+			}
+			catch (Exception ex) {
+				throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage", new Object[0]);
+			}
+		}
+        final int tinkerType = argValue;
 		
 		EntityPlayer entityPlayer = super.getCommandSenderAsPlayer(sender);
 		World world = entityPlayer != null ? entityPlayer.getEntityWorld() : null;
@@ -40,6 +57,11 @@ public class CommandTinkerKill extends CommandTinkerBase {
 		}
 
         List<EntityTinker> entityList = world.getEntitiesWithinAABB(EntityTinker.class, village.getAABB().grow(Village.VILLAGE_SIZE));
+        if (tinkerType != -1) {
+    		entityList = entityList.stream()
+    				.filter((r) -> r.getTinkerType() == tinkerType)
+    				.collect(Collectors.toList());
+        }
         if (entityList.size() == 0) {
 			notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".noexists", new Object[0]);
 			LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".noexists", new Object[0]), true);
@@ -51,9 +73,11 @@ public class CommandTinkerKill extends CommandTinkerBase {
         		continue;
         	
         	entity.setDead();
+        	
+        	String name = (entity.isMale() ? TextFormatting.BLUE : TextFormatting.LIGHT_PURPLE) + entity.getName();
     		
-    		notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".success", new Object[0]);
-    		LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".success", new Object[0]), true);
+    		notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".success", new Object[] { name });
+    		LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".success", new Object[] { name }), true);
         }
 	}
     
