@@ -46,6 +46,7 @@ public class TektopiaTinker {
 		instance = this;
 		
 		proxy.preInitialize(e);
+		proxy.resetDebug();
 	}
 	  
 	@Mod.EventHandler
