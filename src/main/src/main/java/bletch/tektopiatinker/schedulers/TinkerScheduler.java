@@ -1,10 +1,11 @@
 package bletch.tektopiatinker.schedulers;
 
+import bletch.common.schedulers.IScheduler;
+import bletch.common.utils.TektopiaUtils;
+import bletch.common.utils.TextUtils;
 import bletch.tektopiatinker.core.ModConfig;
 import bletch.tektopiatinker.entities.EntityTinker;
 import bletch.tektopiatinker.utils.LoggerUtils;
-import bletch.tektopiatinker.utils.TektopiaUtils;
-import bletch.tektopiatinker.utils.TextUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;

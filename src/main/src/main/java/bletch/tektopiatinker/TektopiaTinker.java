@@ -1,10 +1,10 @@
 package bletch.tektopiatinker;
 
+import bletch.common.schedulers.ScheduleManager;
 import bletch.tektopiatinker.commands.TinkerCommands;
 import bletch.tektopiatinker.core.ModCommonProxy;
 import bletch.tektopiatinker.core.ModDetails;
 import bletch.tektopiatinker.core.ModEntities;
-import bletch.tektopiatinker.schedulers.ScheduleManager;
 import bletch.tektopiatinker.schedulers.TinkerScheduler;
 import bletch.tektopiatinker.utils.LoggerUtils;
 import com.leviathanstudio.craftstudio.client.registry.CraftStudioLoader;
@@ -44,8 +44,8 @@ public class TektopiaTinker {
     public void preInitialize(FMLPreInitializationEvent e) {
         instance = this;
 
-        proxy.preInitialize(e);
         proxy.resetDebug();
+        proxy.preInitialize(e);
     }
 
     @Mod.EventHandler

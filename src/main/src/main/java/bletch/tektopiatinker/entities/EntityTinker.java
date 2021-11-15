@@ -1,11 +1,11 @@
 package bletch.tektopiatinker.entities;
 
+import bletch.common.entities.ai.EntityAILeaveVillage;
+import bletch.common.entities.ai.EntityAIVisitVillage;
+import bletch.common.entities.ai.EntityAIWanderVillage;
 import bletch.tektopiatinker.core.ModConfig;
 import bletch.tektopiatinker.core.ModDetails;
 import bletch.tektopiatinker.core.ModEntities;
-import bletch.tektopiatinker.entities.ai.EntityAILeaveVillage;
-import bletch.tektopiatinker.entities.ai.EntityAIVisitVillage;
-import bletch.tektopiatinker.entities.ai.EntityAIWanderVillage;
 import bletch.tektopiatinker.utils.LoggerUtils;
 import com.leviathanstudio.craftstudio.client.animation.ClientAnimationHandler;
 import com.leviathanstudio.craftstudio.common.animation.AnimationHandler;

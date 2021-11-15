@@ -1,8 +1,10 @@
 package bletch.tektopiatinker.commands;
 
+import bletch.common.commands.CommonCommandBase;
+import bletch.common.utils.TextUtils;
+import bletch.tektopiatinker.core.ModDetails;
 import bletch.tektopiatinker.entities.EntityTinker;
 import bletch.tektopiatinker.utils.LoggerUtils;
-import bletch.tektopiatinker.utils.TextUtils;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -16,18 +18,18 @@ import net.tangotek.tektopia.VillageManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CommandTinkerKill extends CommandTinkerBase {
+public class CommandTinkerKill extends CommonCommandBase {
 
     private static final String COMMAND_NAME = "kill";
 
     public CommandTinkerKill() {
-        super(COMMAND_NAME);
+        super(ModDetails.MOD_ID, TinkerCommands.COMMAND_PREFIX, COMMAND_NAME);
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length > 1) {
-            throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage");
+            throw new WrongUsageException(this.prefix + COMMAND_NAME + ".usage");
         }
 
         int argValue = -1;
@@ -36,10 +38,10 @@ public class CommandTinkerKill extends CommandTinkerBase {
                 argValue = Integer.parseInt(args[0]);
 
                 if (!EntityTinker.isTinkerTypeValid(argValue)) {
-                    throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage");
+                    throw new WrongUsageException(this.prefix + COMMAND_NAME + ".usage");
                 }
             } catch (Exception ex) {
-                throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage");
+                throw new WrongUsageException(this.prefix + COMMAND_NAME + ".usage");
             }
         }
         final int tinkerType = argValue;
@@ -50,8 +52,8 @@ public class CommandTinkerKill extends CommandTinkerBase {
         VillageManager villageManager = world != null ? VillageManager.get(world) : null;
         Village village = villageManager != null && entityPlayer != null ? villageManager.getVillageAt(entityPlayer.getPosition()) : null;
         if (village == null) {
-            notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".novillage");
-            LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".novillage"), true);
+            notifyCommandListener(sender, this, this.prefix + COMMAND_NAME + ".novillage");
+            LoggerUtils.info(TextUtils.translate(this.prefix + COMMAND_NAME + ".novillage"), true);
             return;
         }
 
@@ -62,8 +64,8 @@ public class CommandTinkerKill extends CommandTinkerBase {
                     .collect(Collectors.toList());
         }
         if (entityList.size() == 0) {
-            notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".noexists");
-            LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".noexists"), true);
+            notifyCommandListener(sender, this, this.prefix + COMMAND_NAME + ".noexists");
+            LoggerUtils.info(TextUtils.translate(this.prefix + COMMAND_NAME + ".noexists"), true);
             return;
         }
 
@@ -75,8 +77,8 @@ public class CommandTinkerKill extends CommandTinkerBase {
 
             String name = (entity.isMale() ? TextFormatting.BLUE : TextFormatting.LIGHT_PURPLE) + entity.getName();
 
-            notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".success", name);
-            LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".success", name), true);
+            notifyCommandListener(sender, this, this.prefix + COMMAND_NAME + ".success", name);
+            LoggerUtils.info(TextUtils.translate(this.prefix + COMMAND_NAME + ".success", name), true);
         }
     }
 

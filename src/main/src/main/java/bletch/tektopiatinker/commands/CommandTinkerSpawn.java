@@ -1,9 +1,11 @@
 package bletch.tektopiatinker.commands;
 
+import bletch.common.commands.CommonCommandBase;
+import bletch.common.utils.TektopiaUtils;
+import bletch.common.utils.TextUtils;
+import bletch.tektopiatinker.core.ModDetails;
 import bletch.tektopiatinker.entities.EntityTinker;
 import bletch.tektopiatinker.utils.LoggerUtils;
-import bletch.tektopiatinker.utils.TektopiaUtils;
-import bletch.tektopiatinker.utils.TextUtils;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -16,24 +18,24 @@ import net.tangotek.tektopia.VillageManager;
 
 import java.util.List;
 
-public class CommandTinkerSpawn extends CommandTinkerBase {
+public class CommandTinkerSpawn extends CommonCommandBase {
 
     private static final String COMMAND_NAME = "spawn";
 
     public CommandTinkerSpawn() {
-        super(COMMAND_NAME);
+        super(ModDetails.MOD_ID, TinkerCommands.COMMAND_PREFIX, COMMAND_NAME);
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length < 1 || args.length > 2) {
-            throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage");
+            throw new WrongUsageException(this.prefix + COMMAND_NAME + ".usage");
         }
 
         boolean spawnNearMe = false;
         if (args.length > 1) {
             if (!args[1].equalsIgnoreCase("me")) {
-                throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage");
+                throw new WrongUsageException(this.prefix + COMMAND_NAME + ".usage");
             }
 
             spawnNearMe = true;
@@ -44,10 +46,10 @@ public class CommandTinkerSpawn extends CommandTinkerBase {
             argValue = Integer.parseInt(args[0]);
 
             if (!EntityTinker.isTinkerTypeValid(argValue)) {
-                throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage");
+                throw new WrongUsageException(this.prefix + COMMAND_NAME + ".usage");
             }
         } catch (Exception ex) {
-            throw new WrongUsageException(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".usage");
+            throw new WrongUsageException(this.prefix + COMMAND_NAME + ".usage");
         }
 
         int tinkerType = argValue;
@@ -56,8 +58,8 @@ public class CommandTinkerSpawn extends CommandTinkerBase {
         World world = entityPlayer != null ? entityPlayer.getEntityWorld() : null;
 
         if (world == null || world.isRaining() || Village.isNightTime(world)) {
-            notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".badconditions");
-            LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".badconditions"), true);
+            notifyCommandListener(sender, this, this.prefix + COMMAND_NAME + ".badconditions");
+            LoggerUtils.info(TextUtils.translate(this.prefix + COMMAND_NAME + ".badconditions"), true);
             return;
         }
 
@@ -65,16 +67,16 @@ public class CommandTinkerSpawn extends CommandTinkerBase {
         Village village = villageManager != null && entityPlayer != null ? villageManager.getVillageAt(entityPlayer.getPosition()) : null;
 
         if (village == null) {
-            notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".novillage");
-            LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".novillage"), true);
+            notifyCommandListener(sender, this, this.prefix + COMMAND_NAME + ".novillage");
+            LoggerUtils.info(TextUtils.translate(this.prefix + COMMAND_NAME + ".novillage"), true);
             return;
         }
 
         BlockPos spawnPosition = spawnNearMe ? entityPlayer.getPosition() : TektopiaUtils.getVillageSpawnPoint(world, village);
 
         if (spawnPosition == null) {
-            notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".noposition");
-            LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".noposition"), true);
+            notifyCommandListener(sender, this, this.prefix + COMMAND_NAME + ".noposition");
+            LoggerUtils.info(TextUtils.translate(this.prefix + COMMAND_NAME + ".noposition"), true);
             return;
         }
 
@@ -82,20 +84,20 @@ public class CommandTinkerSpawn extends CommandTinkerBase {
         long tinkerTypeCount = entityList.stream().filter((r) -> r.getTinkerType() == tinkerType).count();
 
         if (tinkerTypeCount > 0) {
-            notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".exists");
-            LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".exists"), true);
+            notifyCommandListener(sender, this, this.prefix + COMMAND_NAME + ".exists");
+            LoggerUtils.info(TextUtils.translate(this.prefix + COMMAND_NAME + ".exists"), true);
             return;
         }
 
         // attempt to spawn the tinker
         if (!TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w, tinkerType))) {
-            notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".failed");
-            LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".failed"), true);
+            notifyCommandListener(sender, this, this.prefix + COMMAND_NAME + ".failed");
+            LoggerUtils.info(TextUtils.translate(this.prefix + COMMAND_NAME + ".failed"), true);
             return;
         }
 
-        notifyCommandListener(sender, this, TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".success", TektopiaUtils.formatBlockPos(spawnPosition));
-        LoggerUtils.info(TextUtils.translate(TinkerCommands.COMMAND_PREFIX + COMMAND_NAME + ".success", TektopiaUtils.formatBlockPos(spawnPosition)), true);
+        notifyCommandListener(sender, this, this.prefix + COMMAND_NAME + ".success", TektopiaUtils.formatBlockPos(spawnPosition));
+        LoggerUtils.info(TextUtils.translate(this.prefix + COMMAND_NAME + ".success", TektopiaUtils.formatBlockPos(spawnPosition)), true);
     }
 
 }
