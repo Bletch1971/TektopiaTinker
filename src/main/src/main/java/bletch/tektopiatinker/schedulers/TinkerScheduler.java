@@ -27,7 +27,7 @@ public class TinkerScheduler implements IScheduler {
         if (this.resetNight)
             return;
 
-        LoggerUtils.info("TinkerScheduler - resetNight called", true);
+        LoggerUtils.instance.info("TinkerScheduler - resetNight called", true);
 
         // if it is nighttime, then clear the village checks
         this.checkedVillages = false;
@@ -40,7 +40,7 @@ public class TinkerScheduler implements IScheduler {
         if (this.checkedVillages || world == null || world.isRaining() || !EntityTinker.isWorkTime(world, 0))
             return;
 
-        LoggerUtils.info("TinkerScheduler - update called", true);
+        LoggerUtils.instance.info("TinkerScheduler - update called", true);
 
         this.resetNight = false;
         this.checkedVillages = true;
@@ -64,7 +64,7 @@ public class TinkerScheduler implements IScheduler {
 
                 if (villageLevel > 0 && villageCheck == 0) {
 
-                    LoggerUtils.info(TextUtils.translate("message.tinker.villagechecksuccess", villageName, villageLevel, villageCheck), true);
+                    LoggerUtils.instance.info(TextUtils.translate("message.tinker.villagechecksuccess", villageName, villageLevel, villageCheck), true);
 
                     // get a list of the Tinkers in the village
                     if (entityList == null)
@@ -79,17 +79,17 @@ public class TinkerScheduler implements IScheduler {
                         // attempt spawn
                         if (TektopiaUtils.trySpawnEntity(world, spawnPosition, (World w) -> new EntityTinker(w, tinkerType))) {
                             v.sendChatMessage(new TextComponentTranslation("message.tinker.spawned"));
-                            LoggerUtils.info(TextUtils.translate("message.tinker.spawned.village", villageName, TektopiaUtils.formatBlockPos(spawnPosition)), true);
+                            LoggerUtils.instance.info(TextUtils.translate("message.tinker.spawned.village", villageName, TektopiaUtils.formatBlockPos(spawnPosition)), true);
                         } else {
-                            LoggerUtils.info(TextUtils.translate("message.tinker.noposition.village", villageName), true);
+                            LoggerUtils.instance.info(TextUtils.translate("message.tinker.noposition.village", villageName), true);
                         }
 
                     } else {
-                        LoggerUtils.info(TextUtils.translate("message.tinker.exists", villageName), true);
+                        LoggerUtils.instance.info(TextUtils.translate("message.tinker.exists", villageName), true);
                     }
 
                 } else {
-                    LoggerUtils.info(TextUtils.translate("message.tinker.villagecheckfailed", villageName, villageLevel, villageCheck), true);
+                    LoggerUtils.instance.info(TextUtils.translate("message.tinker.villagecheckfailed", villageName, villageLevel, villageCheck), true);
                 }
             }
         });
